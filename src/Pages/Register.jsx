@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import logo from "../assets/logo-new-JRM-2685501165.png";
 import "./Login.css";
 import Swal from "sweetalert2";
+import BASE_URL from "../../apiConfig";
 
 const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -45,7 +46,7 @@ const Register = () => {
         title: "Please enter Password",
       });
     } else {
-      const response = await fetch("http://localhost:8080/api/user/register", {
+      const response = await fetch(BASE_URL + "user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

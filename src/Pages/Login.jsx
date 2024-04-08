@@ -4,6 +4,7 @@ import "./Login.css";
 import logo from "../assets/logo-new-JRM-2685501165.png";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
+import BASE_URL from "../../apiConfig";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,7 +34,7 @@ const Login = () => {
 
     // }
     else {
-      const response = await fetch("http://localhost:8080/api/user/login", {
+      const response = await fetch(BASE_URL + "user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
