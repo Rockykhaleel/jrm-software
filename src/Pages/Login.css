@@ -1,0 +1,28 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url(../assets/zigzag.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.card {
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.34);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(9.6px);
+  -webkit-backdrop-filter: blur(9.6px);
+  border: 1px solid rgba(255, 255, 255, 0.29);
+}
+#image {
+  width: 250px;
+  height: 230px;
+}
+#buttoned {
+  width: 230px;
+  border-radius: 15px;
+  background-color: #65b82c;
+}
