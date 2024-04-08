@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import UserNavigation from "../../Components/user/UserNavigation";
 import Swal from "sweetalert2";
 import { Navigate } from "react-router-dom";
+import BASE_URL from "../../../apiConfig";
 
 // eslint-disable-next-line react/prop-types
 const Makatibs = ({ Toggle }) => {
@@ -33,16 +34,13 @@ const Makatibs = ({ Toggle }) => {
 
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/makatib/makatibByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}makatib/makatibByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       // console.log(data.data);
       if (data.data) {
@@ -58,16 +56,13 @@ const Makatibs = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Makatibs?");
     if (conf) {
-      const response = await fetch(
-        "http://localhost:8080/api/makatib/deletemakatib/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "makatib/deletemakatib/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -83,7 +78,7 @@ const Makatibs = ({ Toggle }) => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
   //   const response = await fetch(
-  //     "http://localhost:8080/api/makatib/getReportData/" + userId.id,
+  //     BASE_URL "makatib/getReportData/" + userId.id,
   //     {
   //       method: "get",
   //       headers: {
@@ -101,7 +96,7 @@ const Makatibs = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/api/makatib/getReportData/" + userId.id,
+        BASE_URL + "makatib/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -137,17 +132,14 @@ const Makatibs = ({ Toggle }) => {
       suggestionActive: true,
     };
     // console.log(obb);
-    const response = await fetch(
-      "http://localhost:8080/api/ask/addsuggestions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(obb),
-      }
-    );
+    const response = await fetch(BASE_URL + "ask/addsuggestions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(obb),
+    });
 
     if (response.status === 201) {
       setIsSuccess(true);
@@ -160,16 +152,13 @@ const Makatibs = ({ Toggle }) => {
 
   const fetchSuggestionData = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/ask/suggestionsByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}ask/suggestionsByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       if (data.data) {
         setSuggestion(data.data);
@@ -187,16 +176,13 @@ const Makatibs = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      "http://localhost:8080/api/makatib/makatibByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "makatib/makatibByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -253,17 +239,14 @@ const Makatibs = ({ Toggle }) => {
         title: "Please enter expenses details",
       });
     } else {
-      const response = await fetch(
-        "http://localhost:8080/api/makatib/addmakatib",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "makatib/addmakatib", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);
@@ -326,7 +309,7 @@ const Makatibs = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        "http://localhost:8080/api/makatib/updatemakatib/" + bookId,
+        BASE_URL + "makatib/updatemakatib/" + bookId,
         {
           method: "PUT",
           headers: {
