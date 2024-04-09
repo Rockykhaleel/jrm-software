@@ -1,4 +1,4 @@
-// apiConfig.js
+// apiConfig.js can change api url from here
 
 const BASE_URL = "http://192.168.29.92:8080/api/";
 
