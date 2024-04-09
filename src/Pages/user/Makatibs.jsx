@@ -362,11 +362,13 @@ const Makatibs = ({ Toggle }) => {
             >
               Add New <i className="bi bi-plus-square-fill"></i>
             </button>
+            {/* /from */}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <button className="btn btn-success" onClick={downloadReport}>
               Download Report &nbsp;
               <i className="bi bi-file-earmark-spreadsheet"></i>
             </button>
+            {/* to */}
           </div>
           <table className="table table-hover">
             <thead>
@@ -418,6 +420,7 @@ const Makatibs = ({ Toggle }) => {
                       Delete<i className="bi bi-trash3-fill"></i>
                     </button>
                   </td>
+                  {/* from */}
                   <td>
                     {suggestion &&
                     suggestion.length > 0 &&
@@ -442,6 +445,7 @@ const Makatibs = ({ Toggle }) => {
                       </button>
                     )}
                   </td>
+                  {/* to */}
                 </tr>
               ))}
             </tbody>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import UserNavigation from "../../Components/user/UserNavigation";
 import Swal from "sweetalert2";
 import { Navigate } from "react-router-dom";
+import BASE_URL from "../../../apiConfig";
 
 // eslint-disable-next-line react/prop-types
 const Ulama = ({ Toggle }) => {
@@ -16,12 +17,14 @@ const Ulama = ({ Toggle }) => {
   const [userObj, setUserObj] = useState([]);
   const [bookObj, setBookObj] = useState({});
   const [bookId, setBookId] = useState("");
+  const [suggestion, setSuggestion] = useState({});
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     const parsed = JSON.parse(user);
     setUserId(parsed);
     fetchData(parsed.id);
+    fetchSuggestionData(parsed.id);
   }, []);
 
   // useEffect(() => {
@@ -31,7 +34,7 @@ const Ulama = ({ Toggle }) => {
   const fetchData = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/ulama/ulamaByUserID/${id}`,
+        `${BASE_URL}ulama/ulamaByUserID/${id}`,
         {
           method: "GET",
           headers: {
@@ -56,7 +59,7 @@ const Ulama = ({ Toggle }) => {
     const conf = confirm("Are you sure to remove this book?");
     if (conf) {
       const response = await fetch(
-        "http://localhost:8080/api/ulama/deleteulama/" + id,
+        BASE_URL +"ulama/deleteulama/" + id,
         {
           method: "delete",
           headers: {
@@ -75,12 +78,112 @@ const Ulama = ({ Toggle }) => {
       }
     }
   };
+    // from new
+  // const downloadReport = async () => {
+  //   // console.log(userObj);
+  //   // console.log(userId.id);
+  //   const response = await fetch(
+  //     BASE_URL "makatib/getReportData/" + userId.id,
+  //     {
+  //       method: "get",
+  //       headers: {
+  //         authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     }
+  //   );
+  //   if (response.status === 200) {
+  //     console.log("success");
+  //   } else {
+  //     console.log("failure");
+  //   }
+  // };
+
+  const downloadReport = async () => {
+    try {
+      const response = await fetch(
+        BASE_URL + "makatib/getReportData/" + userId.id,
+        {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "report.csv");
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } else {
+        console.log("Download failed:", response.status);
+      }
+    } catch (error) {
+      console.error("Download error:", error);
+    }
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const suggestionDetails = async (item) => {
+    // console.log(item);
+    const username = JSON.parse(localStorage.getItem("user"));
+    const obb = {
+      userName: username.name,
+      userId: item.userId,
+      suggestiondetails: item,
+      suggestionActive: true,
+    };
+    // console.log(obb);
+    const response = await fetch(BASE_URL + "ask/addsuggestions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(obb),
+    });
+
+    if (response.status === 201) {
+      setIsSuccess(true);
+      Swal.fire({
+        icon: "success",
+        title: "New Suggestion Added successfully!",
+      });
+    }
+  };
+
+  const fetchSuggestionData = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}ask/suggestionsByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      if (data.data) {
+        setSuggestion(data.data);
+        // console.log("suggestion is here");
+        // console.log(data.data); // Use data.data here instead of suggestion
+      } else {
+        console.error("Error fetching data:", response.status);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
+  //to new
 
   const getBookDataByID = async (id) => {
     console.log("empty book object -> ", bookObj);
     console.log(mainId);
     const response = await fetch(
-      "http://localhost:8080/api/ulama/ulamaByID/" + id,
+      BASE_URL +"ulama/ulamaByID/" + id,
       {
         method: "get",
         headers: {
@@ -121,7 +224,7 @@ const Ulama = ({ Toggle }) => {
         title: "Please enter Ulama Contact",
       });
     } else {
-      const response = await fetch("http://localhost:8080/api/ulama/addulama", {
+      const response = await fetch(BASE_URL +"ulama/addulama", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -167,7 +270,7 @@ const Ulama = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        "http://localhost:8080/api/ulama/updateulama/" + bookId,
+        BASE_URL +"ulama/updateulama/" + bookId,
         {
           method: "PUT",
           headers: {
@@ -215,6 +318,11 @@ const Ulama = ({ Toggle }) => {
             >
               Add New <i className="bi bi-plus-square-fill"></i>
             </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button className="btn btn-success" onClick={downloadReport}>
+              Download Report &nbsp;
+              <i className="bi bi-file-earmark-spreadsheet"></i>
+            </button>
           </div>
           <table className="table table-hover">
             <thead>
@@ -225,6 +333,7 @@ const Ulama = ({ Toggle }) => {
                 <th scope="col">Ulama Contact</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
+                <th scope="col">Ask Suggestion</th>
               </tr>
             </thead>
             <tbody>
@@ -256,6 +365,30 @@ const Ulama = ({ Toggle }) => {
                     >
                       Delete<i className="bi bi-trash3-fill"></i>
                     </button>
+                  </td>
+                  <td>
+                    {suggestion &&
+                    suggestion.length > 0 &&
+                    suggestion.find(
+                      (s) =>
+                        s.suggestiondetails._id === item._id &&
+                        s.suggestionActive === true
+                    ) ? (
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => suggestionDetails(item)}
+                        disabled
+                      >
+                        Ask for suggestion
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => suggestionDetails(item)}
+                      >
+                        Ask for suggestion
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
