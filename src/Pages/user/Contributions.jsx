@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import UserNavigation from "../../Components/user/UserNavigation";
 import Swal from "sweetalert2";
 import { Navigate } from "react-router-dom";
+import BASE_URL from "../../../apiConfig";
 
 // eslint-disable-next-line react/prop-types
 const Contributions = ({ Toggle }) => {
@@ -17,6 +18,7 @@ const Contributions = ({ Toggle }) => {
   const [userObj, setUserObj] = useState([]);
   const [bookObj, setBookObj] = useState({});
   const [bookId, setBookId] = useState("");
+  const [suggestion, setSuggestion] = useState({});
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -24,12 +26,13 @@ const Contributions = ({ Toggle }) => {
     // console.log(parsed);
     setUserId(parsed);
     fetchData(parsed.id);
+    fetchSuggestionData(parsed.id);
   }, []);
   //here
   const fetchData = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/markazcon/markazconByUserID/${id}`,
+        `${BASE_URL}markazcon/markazconByUserID/${id}`,
         {
           method: "GET",
           headers: {
@@ -56,7 +59,7 @@ const Contributions = ({ Toggle }) => {
     );
     if (conf) {
       const response = await fetch(
-        "http://localhost:8080/api/markazcon/deletemarkazcon/" + id,
+        "${BASE_URL}markazcon/deletemarkazcon/" + id,
         {
           method: "delete",
           headers: {
@@ -75,12 +78,112 @@ const Contributions = ({ Toggle }) => {
       }
     }
   };
+    // from new
+  // const downloadReport = async () => {
+  //   // console.log(userObj);
+  //   // console.log(userId.id);
+  //   const response = await fetch(
+  //     BASE_URL "makatib/getReportData/" + userId.id,
+  //     {
+  //       method: "get",
+  //       headers: {
+  //         authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     }
+  //   );
+  //   if (response.status === 200) {
+  //     console.log("success");
+  //   } else {
+  //     console.log("failure");
+  //   }
+  // };
+
+  const downloadReport = async () => {
+    try {
+      const response = await fetch(
+        BASE_URL + "makatib/getReportData/" + userId.id,
+        {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "report.csv");
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } else {
+        console.log("Download failed:", response.status);
+      }
+    } catch (error) {
+      console.error("Download error:", error);
+    }
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const suggestionDetails = async (item) => {
+    // console.log(item);
+    const username = JSON.parse(localStorage.getItem("user"));
+    const obb = {
+      userName: username.name,
+      userId: item.userId,
+      suggestiondetails: item,
+      suggestionActive: true,
+    };
+    // console.log(obb);
+    const response = await fetch(BASE_URL + "ask/addsuggestions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(obb),
+    });
+
+    if (response.status === 201) {
+      setIsSuccess(true);
+      Swal.fire({
+        icon: "success",
+        title: "New Suggestion Added successfully!",
+      });
+    }
+  };
+
+  const fetchSuggestionData = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}ask/suggestionsByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      if (data.data) {
+        setSuggestion(data.data);
+        // console.log("suggestion is here");
+        // console.log(data.data); // Use data.data here instead of suggestion
+      } else {
+        console.error("Error fetching data:", response.status);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
+
+  //to new
 
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
     const response = await fetch(
-      "http://localhost:8080/api/markazcon/markazconByID/" + id,
+      BASE_URL +"markazcon/markazconByID/" + id,
       {
         method: "get",
         headers: {
@@ -129,7 +232,7 @@ const Contributions = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        "http://localhost:8080/api/markazcon/addmarkazcon",
+        BASE_URL + "markazcon/addmarkazcon",
         {
           method: "POST",
           headers: {
@@ -184,7 +287,7 @@ const Contributions = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        "http://localhost:8080/api/markazcon/updatemarkazcon/" + bookId,
+        BASE_URL +"markazcon/updatemarkazcon/" + bookId,
         {
           method: "PUT",
           headers: {
@@ -234,6 +337,11 @@ const Contributions = ({ Toggle }) => {
             >
               Add New <i className="bi bi-plus-square-fill"></i>
             </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button className="btn btn-success" onClick={downloadReport}>
+              Download Report &nbsp;
+              <i className="bi bi-file-earmark-spreadsheet"></i>
+            </button>
           </div>
           <table className="table table-hover">
             <thead>
@@ -245,6 +353,7 @@ const Contributions = ({ Toggle }) => {
                 <th scope="col">Purpose</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
+                <th scope="col">Ask Suggestion</th>
               </tr>
             </thead>
             <tbody>
@@ -277,6 +386,30 @@ const Contributions = ({ Toggle }) => {
                     >
                       Delete<i className="bi bi-trash3-fill"></i>
                     </button>
+                  </td>
+                  <td>
+                    {suggestion &&
+                    suggestion.length > 0 &&
+                    suggestion.find(
+                      (s) =>
+                        s.suggestiondetails._id === item._id &&
+                        s.suggestionActive === true
+                    ) ? (
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => suggestionDetails(item)}
+                        disabled
+                      >
+                        Ask for suggestion
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => suggestionDetails(item)}
+                      >
+                        Ask for suggestion
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
