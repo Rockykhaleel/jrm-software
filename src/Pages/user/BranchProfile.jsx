@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import UserNavigation from "../../Components/user/UserNavigation";
 import Swal from "sweetalert2";
 import { Navigate } from "react-router-dom";
+import BASE_URL from "../../../apiConfig";
 
 // eslint-disable-next-line react/prop-types
 const BranchProfile = ({ Toggle }) => {
@@ -26,16 +27,13 @@ const BranchProfile = ({ Toggle }) => {
       // const user = JSON.parse(localStorage.getItem("user"));
       // console.log("Hello from frontend user -> ", user);
 
-      const response = await fetch(
-        `http://localhost:8080/api/user/userByID/${parsed.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}user/userByID/${parsed.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // console.log(response);
       // console.log(response.status);
@@ -91,17 +89,14 @@ const BranchProfile = ({ Toggle }) => {
         title: "Please enter Account Details",
       });
     } else {
-      const response = await fetch(
-        "http://localhost:8080/api/user/updateUser/" + id,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "user/updateUser/" + id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       // const data = await response.json();
       // console.log(data);

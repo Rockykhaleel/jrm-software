@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import UserNavigation from "../../Components/user/UserNavigation";
 import Swal from "sweetalert2";
 import { Navigate } from "react-router-dom";
+import BASE_URL from "../../../apiConfig";
 
 // eslint-disable-next-line react/prop-types
 const Completions = ({ Toggle }) => {
@@ -31,7 +32,7 @@ const Completions = ({ Toggle }) => {
   const fetchData = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/competions/competionsByUserID/${id}`,
+        `${BASE_URL}competions/competionsByUserID/${id}`,
         {
           method: "GET",
           headers: {
@@ -56,7 +57,7 @@ const Completions = ({ Toggle }) => {
     const conf = confirm("Are you sure to remove this Competions?");
     if (conf) {
       const response = await fetch(
-        "http://localhost:8080/api/competions/deletecompetions/" + id,
+        BASE_URL + "competions/deletecompetions/" + id,
         {
           method: "delete",
           headers: {
@@ -79,16 +80,13 @@ const Completions = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      "http://localhost:8080/api/competions/competionsByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "competions/competionsByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -140,17 +138,14 @@ const Completions = ({ Toggle }) => {
         title: "Please enter expenses",
       });
     } else {
-      const response = await fetch(
-        "http://localhost:8080/api/competions/addcompetions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "competions/addcompetions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);
@@ -207,7 +202,7 @@ const Completions = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        "http://localhost:8080/api/competions/updatecompetions/" + bookId,
+        BASE_URL + "competions/updatecompetions/" + bookId,
         {
           method: "PUT",
           headers: {

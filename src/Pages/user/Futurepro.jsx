@@ -33,16 +33,13 @@ const Futurepro = ({ Toggle }) => {
   //here
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}future/futureByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}future/futureByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       // console.log(data.data);
       if (data.data) {
@@ -58,16 +55,13 @@ const Futurepro = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Future project?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL +"future/deletefuture/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "future/deletefuture/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -78,7 +72,7 @@ const Futurepro = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -101,7 +95,7 @@ const Futurepro = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "future/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -182,16 +176,13 @@ const Futurepro = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      BASE_URL +"future/futureByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "future/futureByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -243,17 +234,14 @@ const Futurepro = ({ Toggle }) => {
         title: "Please enter date of completion",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"future/addfuture",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "future/addfuture", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);
@@ -309,17 +297,14 @@ const Futurepro = ({ Toggle }) => {
         title: "Please enter date of completion",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"future/updatefuture/" + bookId,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "future/updatefuture/" + bookId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 200) {
         setIsSuccess(true);

@@ -34,16 +34,13 @@ const Library = ({ Toggle }) => {
 
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}lib/libraryByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}lib/libraryByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       if (data.data) {
         setUserObj(data.data);
@@ -58,16 +55,13 @@ const Library = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this book?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL +"lib/deleteLibrary/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "lib/deleteLibrary/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -78,7 +72,7 @@ const Library = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -101,7 +95,7 @@ const Library = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "lib/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -182,16 +176,13 @@ const Library = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      BASE_URL +"lib/libraryByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "lib/libraryByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -230,7 +221,7 @@ const Library = ({ Toggle }) => {
         title: "Please enter Facility of Books",
       });
     } else {
-      const response = await fetch( BASE_URL +"lib/addlibrary", {
+      const response = await fetch(BASE_URL + "lib/addlibrary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -281,17 +272,14 @@ const Library = ({ Toggle }) => {
         title: "Please enter Facility of Books",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"lib/updatelibrary/" + bookId,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "lib/updatelibrary/" + bookId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 200) {
         setIsSuccess(true);

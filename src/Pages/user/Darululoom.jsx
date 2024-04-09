@@ -60,16 +60,13 @@ const Darululoom = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Darululoom?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL +"darul/deletedarululoom/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "darul/deletedarululoom/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -80,7 +77,7 @@ const Darululoom = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -103,7 +100,7 @@ const Darululoom = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "darul/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -184,16 +181,13 @@ const Darululoom = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      "darul/darululoomByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "darul/darululoomByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -257,17 +251,14 @@ const Darululoom = ({ Toggle }) => {
         title: "Please enter Masjid Maintainance",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"darul/adddarululoom",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "darul/adddarululoom", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);
@@ -336,7 +327,7 @@ const Darululoom = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        BASE_URL +"darul/updatedarululoom/" + bookId,
+        BASE_URL + "darul/updatedarululoom/" + bookId,
         {
           method: "PUT",
           headers: {

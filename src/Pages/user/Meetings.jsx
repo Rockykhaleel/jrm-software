@@ -32,16 +32,13 @@ const Meetings = ({ Toggle }) => {
 
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}meeting/meetingByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}meeting/meetingByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       // console.log(data.data);
       if (data.data) {
@@ -57,16 +54,13 @@ const Meetings = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Masjid Construction?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL +"meeting/deletemeeting/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "meeting/deletemeeting/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -77,7 +71,7 @@ const Meetings = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -100,7 +94,7 @@ const Meetings = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "meeting/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -181,16 +175,13 @@ const Meetings = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      BASE_URL +"meeting/meetingByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "meeting/meetingByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -241,17 +232,14 @@ const Meetings = ({ Toggle }) => {
         title: "Please enter date of meeting",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"meeting/addmeeting",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "meeting/addmeeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);
@@ -308,7 +296,7 @@ const Meetings = ({ Toggle }) => {
       });
     } else {
       const response = await fetch(
-        BASE_URL +"meeting/updatemeeting/" + bookId,
+        BASE_URL + "meeting/updatemeeting/" + bookId,
         {
           method: "PUT",
           headers: {

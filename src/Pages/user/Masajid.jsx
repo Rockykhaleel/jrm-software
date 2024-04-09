@@ -20,9 +20,8 @@ const Masajid = ({ Toggle }) => {
   const [userObj, setUserObj] = useState([]);
   const [bookObj, setBookObj] = useState({});
   const [bookId, setBookId] = useState("");
-  
-  const [suggestion, setSuggestion] = useState({});
 
+  const [suggestion, setSuggestion] = useState({});
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -34,16 +33,13 @@ const Masajid = ({ Toggle }) => {
   //here
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}masajid/masjidsByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}masajid/masjidsByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       // console.log(data.data);
       if (data.data) {
@@ -59,16 +55,13 @@ const Masajid = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Makatibs?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL + "masajid/deletemasjids/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "masajid/deletemasjids/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -79,7 +72,7 @@ const Masajid = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -102,7 +95,7 @@ const Masajid = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "masajid/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -183,16 +176,13 @@ const Masajid = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      BASE_URL + "masajid/masjidsByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "masajid/masjidsByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -243,17 +233,14 @@ const Masajid = ({ Toggle }) => {
         title: "Please enter books masajid managed",
       });
     } else {
-      const response = await fetch(
-        BASE_URL + "masajid/addmasjids",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "masajid/addmasjids", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 201) {
         setIsSuccess(true);

@@ -34,7 +34,6 @@ const Jalsa = ({ Toggle }) => {
   const [bookId, setBookId] = useState("");
   const [suggestion, setSuggestion] = useState({});
 
-
   useEffect(() => {
     const user = localStorage.getItem("user");
     const parsed = JSON.parse(user);
@@ -45,16 +44,13 @@ const Jalsa = ({ Toggle }) => {
   //here
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}jalsa/julusByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}jalsa/julusByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       // console.log(data.data);
       if (data.data) {
@@ -70,16 +66,13 @@ const Jalsa = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this Julus?");
     if (conf) {
-      const response = await fetch(
-        "http://localhost:8080/api/jalsa/deletejulus/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "jalsa/deletejulus/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -90,7 +83,7 @@ const Jalsa = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -113,7 +106,7 @@ const Jalsa = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "jalsa/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -194,16 +187,13 @@ const Jalsa = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     // console.log("empty book object -> ", bookObj);
     // console.log(mainId);
-    const response = await fetch(
-      BASE_URL +"jalsa/julusByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "jalsa/julusByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -326,7 +316,7 @@ const Jalsa = ({ Toggle }) => {
         title: "Please enter Masjid Maintainance",
       });
     } else {
-      const response = await fetch( BASE_URL +"jalsa/addjulus", {
+      const response = await fetch(BASE_URL + "jalsa/addjulus", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -461,17 +451,14 @@ const Jalsa = ({ Toggle }) => {
         title: "Please enter Masjid Maintainance",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"jalsa/updatejulus/" + bookId,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "jalsa/updatejulus/" + bookId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 200) {
         setIsSuccess(true);
@@ -606,29 +593,29 @@ const Jalsa = ({ Toggle }) => {
                       </button>
                     </td>
                     <td>
-                    {suggestion &&
-                    suggestion.length > 0 &&
-                    suggestion.find(
-                      (s) =>
-                        s.suggestiondetails._id === item._id &&
-                        s.suggestionActive === true
-                    ) ? (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
-                        disabled
-                      >
-                        Ask for suggestion
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
-                      >
-                        Ask for suggestion
-                      </button>
-                    )}
-                  </td>
+                      {suggestion &&
+                      suggestion.length > 0 &&
+                      suggestion.find(
+                        (s) =>
+                          s.suggestiondetails._id === item._id &&
+                          s.suggestionActive === true
+                      ) ? (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                          disabled
+                        >
+                          Ask for suggestion
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                        >
+                          Ask for suggestion
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

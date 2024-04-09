@@ -33,16 +33,13 @@ const Ulama = ({ Toggle }) => {
 
   const fetchData = async (id) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}ulama/ulamaByUserID/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}ulama/ulamaByUserID/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       console.log(data.data);
       if (data.data) {
@@ -58,16 +55,13 @@ const Ulama = ({ Toggle }) => {
   const deleteBook = async (id) => {
     const conf = confirm("Are you sure to remove this book?");
     if (conf) {
-      const response = await fetch(
-        BASE_URL +"ulama/deleteulama/" + id,
-        {
-          method: "delete",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "ulama/deleteulama/" + id, {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -78,7 +72,7 @@ const Ulama = ({ Toggle }) => {
       }
     }
   };
-    // from new
+  // from new
   // const downloadReport = async () => {
   //   // console.log(userObj);
   //   // console.log(userId.id);
@@ -101,7 +95,7 @@ const Ulama = ({ Toggle }) => {
   const downloadReport = async () => {
     try {
       const response = await fetch(
-        BASE_URL + "makatib/getReportData/" + userId.id,
+        BASE_URL + "ulama/getReportData/" + userId.id,
         {
           method: "GET",
           headers: {
@@ -182,16 +176,13 @@ const Ulama = ({ Toggle }) => {
   const getBookDataByID = async (id) => {
     console.log("empty book object -> ", bookObj);
     console.log(mainId);
-    const response = await fetch(
-      BASE_URL +"ulama/ulamaByID/" + id,
-      {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(BASE_URL + "ulama/ulamaByID/" + id, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     const data = await response.json();
     if (response.status === 200) {
       setBookObj(data.data);
@@ -224,7 +215,7 @@ const Ulama = ({ Toggle }) => {
         title: "Please enter Ulama Contact",
       });
     } else {
-      const response = await fetch(BASE_URL +"ulama/addulama", {
+      const response = await fetch(BASE_URL + "ulama/addulama", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -245,8 +236,8 @@ const Ulama = ({ Toggle }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    console.log("user id is ->  ", userId);
-    console.log("main _id is -> ", bookId);
+    // console.log("user id is ->  ", userId);
+    // console.log("main _id is -> ", bookId);
     const obb = {
       ulamaname: ulamaname.current.value,
       ulamaposition: ulamaposition.current.value,
@@ -269,17 +260,14 @@ const Ulama = ({ Toggle }) => {
         title: "Please enter Ulama Contact",
       });
     } else {
-      const response = await fetch(
-        BASE_URL +"ulama/updateulama/" + bookId,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(obb),
-        }
-      );
+      const response = await fetch(BASE_URL + "ulama/updateulama/" + bookId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(obb),
+      });
 
       if (response.status === 200) {
         setIsSuccess(true);
