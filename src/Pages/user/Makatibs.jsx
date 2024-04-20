@@ -22,6 +22,7 @@ const Makatibs = ({ Toggle }) => {
   const [bookObj, setBookObj] = useState({});
   const [bookId, setBookId] = useState("");
   const [suggestion, setSuggestion] = useState({});
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -193,7 +194,8 @@ const Makatibs = ({ Toggle }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     setBookId("");
-    const obb = {
+
+    let obb = {
       nofmakatib: nofmakatib.current.value,
       makatibname: makatibname.current.value,
       stupmakatib: stupmakatib.current.value,
@@ -238,7 +240,18 @@ const Makatibs = ({ Toggle }) => {
         icon: "warning",
         title: "Please enter expenses details",
       });
+    } else if (image == null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please enter Image an image",
+      });
     } else {
+      const imageName = await uploadImage();
+      obb = {
+        ...obb,
+        image: imageName, // Step 5: Assign imageName to obb
+      };
+
       const response = await fetch(BASE_URL + "makatib/addmakatib", {
         method: "POST",
         headers: {
@@ -327,6 +340,36 @@ const Makatibs = ({ Toggle }) => {
           title: "Makatib Updated successfully!",
         });
       }
+    }
+  };
+  //new change
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setImage(selectedImage); // Step 3
+  };
+
+  const uploadImage = async () => {
+    if (!image) return; // No image selected
+
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+
+      const response = await fetch(`${BASE_URL}upload/image`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Assuming the response contains the image name
+        return data.imageName;
+      } else {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
     }
   };
 
@@ -592,6 +635,31 @@ const Makatibs = ({ Toggle }) => {
                         // onChange={(e) => setIsMember(e.target.value)}
                       />
                       <label htmlFor="floatingInput">Expenses Details</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                    <div className="form-floating w-100">
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="image"
+                        onChange={handleImageChange} // Step 2: Handle image upload
+                      />
+                      <label htmlFor="image">Upload Image</label>
+                      <div>
+                        {image && ( // Step 4: Display selected image
+                          <div>
+                            <h4>Selected Image:</h4>
+                            <img
+                              src={URL.createObjectURL(image)}
+                              alt="Uploaded"
+                              style={{ height: "200px", width: "200px" }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

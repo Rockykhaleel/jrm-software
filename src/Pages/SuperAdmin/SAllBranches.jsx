@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navigation from "../../Components/admin/Navigation";
 import logo from "../../assets/logo-new-JRM-2685501165.png";
+import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const SAllBranches = ({ Toggle }) => {
@@ -135,35 +136,37 @@ const SAllBranches = ({ Toggle }) => {
             {filteredData.map((item) => {
               return (
                 <div className="col-md-4" key={item._id}>
-                  <div className="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
-                    <div>
-                      <div className="card mb-3">
-                        <div className="row g-0">
-                          <div className="col-md-4">
-                            <img
-                              src={logo}
-                              className="img-fluid rounded-start"
-                              alt="..."
-                            />
-                          </div>
-                          <div className="col-md-8">
-                            <div className="card-body">
-                              <h5 className="card-title">{item.name}</h5>
-                              <h6 className="card-subtitle mb-2 text-body-secondary">
-                                {item.address}
-                              </h6>
-                              <a href="#" className="card-link">
-                                {item.email}
-                              </a>
-                              <a href="#" className="card-link">
-                                {item.phone}
-                              </a>
+                  <Link to={`/singlebranch/${item._id}`}>
+                    <div className="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                      <div>
+                        <div className="card mb-3">
+                          <div className="row g-0">
+                            <div className="col-md-4">
+                              <img
+                                src={logo}
+                                className="img-fluid rounded-start"
+                                alt="..."
+                              />
+                            </div>
+                            <div className="col-md-8">
+                              <div className="card-body">
+                                <h5 className="card-title">{item.name}</h5>
+                                <h6 className="card-subtitle mb-2 text-body-secondary">
+                                  {item.address}
+                                </h6>
+                                <a href="#" className="card-link">
+                                  {item.email}
+                                </a>
+                                <a href="#" className="card-link">
+                                  {item.phone}
+                                </a>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               );
             })}

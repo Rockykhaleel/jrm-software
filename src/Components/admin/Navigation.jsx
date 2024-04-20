@@ -1,19 +1,53 @@
 import { useEffect, useState } from "react";
+import BASE_URL from "../../../apiConfig";
+import { useNavigate } from "react-router-dom"; // Import Link and useNavigate for navigation
 // import "bootstrap/js/dist/collapse";
 
 // eslint-disable-next-line react/prop-types
 const Navigation = ({ Toggle }) => {
   const [userName, setUserName] = useState("");
+  const [userObj, setUserObj] = useState([]);
+  const [activeSuggestionsCount, setActiveSuggestionsCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userobjj = localStorage.getItem("user");
     const uss = JSON.parse(userobjj);
+    const user = localStorage.getItem("user");
+    const parsed = JSON.parse(user);
+    fetchData(parsed.id);
     if (!token) {
       window.location.href = "/login";
     }
     setUserName(uss.name);
     // console.log(uss.name);
   }, []);
+  useEffect(() => {
+    const count = userObj.filter((item) => item.isNewReplyUser).length;
+    setActiveSuggestionsCount(count);
+  }, [userObj]);
+  const history = useNavigate(); // Initialize useNavigate
+
+  // eslint-disable-next-line no-unused-vars
+  const fetchData = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}ask/getAllsuggestions`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      // console.log(data.data);
+      if (data.data) {
+        setUserObj(data.data);
+      } else {
+        console.error("Error fetching data:", response.status);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
   // Function to log out the user
   const doUserLogOut = () => {
     // Clear any session data from local storage
@@ -39,6 +73,15 @@ const Navigation = ({ Toggle }) => {
 
       <div className="collapse navbar-collapse" id="collapsibleNavId">
         <ul className="navbar-nav ms-auto mt-2 me-4 mt-lg-0">
+          <a href="/adminsuggestions">
+            <button type="button" className="btn btn-primary position-relative">
+              Inbox &nbsp;&nbsp;<i className="bi bi-chat-left-dots-fill"></i>
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {activeSuggestionsCount}
+                <span className="visually-hidden">unread messages</span>
+              </span>
+            </button>
+          </a>
           <li className="nav-item dropdown">
             <a
               className="nav-link dropdown-toggle"

@@ -9,6 +9,7 @@ import User_Dashboard from "./Pages/user/User_Dashboard";
 import Superdashboard from "./Pages/SuperAdmin/Superdashboard";
 import AllBranches from "./Pages/SuperAdmin/AllBranches";
 import Ssuggestions from "./Pages/SuperAdmin/Ssuggestions";
+import SsingleBranch from "./Pages/SuperAdmin/SsingleBranch";
 import Scomplaints from "./Pages/SuperAdmin/Scomplaints";
 import User_Suggestions from "./Pages/user/User_Suggestions";
 import Branch_Profile from "./Pages/user/Branch_Profile";
@@ -47,6 +48,7 @@ function App() {
           <Route path="/superdashboard" element={<Superdashboard />} />
           <Route path="/allbranches" element={<AllBranches />} />
           <Route path="/adminsuggestions" element={<Ssuggestions />} />
+          <Route path="/singlebranch/:userId" element={<SsingleBranch />} />
           <Route path="/admincomplaints" element={<Scomplaints />} />
           {/* Super Admin Routes */}
 
