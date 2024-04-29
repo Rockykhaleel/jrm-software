@@ -23,6 +23,7 @@ const Makatibs = ({ Toggle }) => {
   const [bookId, setBookId] = useState("");
   const [suggestion, setSuggestion] = useState({});
   const [image, setImage] = useState(null);
+  const serverUrl = "http://localhost:8080/";
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -249,8 +250,9 @@ const Makatibs = ({ Toggle }) => {
       const imageName = await uploadImage();
       obb = {
         ...obb,
-        image: imageName, // Step 5: Assign imageName to obb
+        imagePath: imageName, // Step 5: Assign imageName to obb
       };
+      // console.log("object with image", obb);
 
       const response = await fetch(BASE_URL + "makatib/addmakatib", {
         method: "POST",
@@ -363,7 +365,8 @@ const Makatibs = ({ Toggle }) => {
       if (response.ok) {
         const data = await response.json();
         // Assuming the response contains the image name
-        return data.imageName;
+        console.log("image name here", data.File.filename);
+        return data.File.filename;
       } else {
         throw new Error("Failed to upload image");
       }
@@ -424,73 +427,91 @@ const Makatibs = ({ Toggle }) => {
                 <th scope="col">Salary</th>
                 <th scope="col">Books Distributed</th>
                 <th scope="col">Expenses Details</th>
+                {/* Image */}
+                <th scope="col">Image</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
                 <th scope="col">Ask Suggestion</th>
               </tr>
             </thead>
             <tbody>
-              {userObj.map((item, index) => (
-                <tr key={index}>
-                  <th scope="row"></th>
-                  <td>{item.nofmakatib}</td>
-                  <td>{item.makatibname}</td>
-                  <td>{item.stupmakatib}</td>
-                  <td>{item.mudarrisdetails}</td>
-                  <td>{item.salary}</td>
-                  <td>{item.booksdist}</td>
-                  <td>{item.expensesdet}</td>
-                  <td>
-                    <button
-                      className="btn btn-success"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={() => {
-                        setIsEditMode(true);
-                        getBookDataByID(item._id);
-                        setBookId(item._id);
-                      }}
-                      // onChange={() => setBookId(item._id)}
-                    >
-                      Edit<i className="bi bi-pencil-square"></i>
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => deleteBook(item._id)}
-                    >
-                      Delete<i className="bi bi-trash3-fill"></i>
-                    </button>
-                  </td>
-                  {/* from */}
-                  <td>
-                    {suggestion &&
-                    suggestion.length > 0 &&
-                    suggestion.find(
-                      (s) =>
-                        s.suggestiondetails._id === item._id &&
-                        s.suggestionActive === true
-                    ) ? (
+              {userObj.map((item, index) => {
+                // Corrected imageUrl usage
+                const imageUrl = item.image
+                  ? `${serverUrl}Uploads/${item.image}`
+                  : "";
+                // console.log(item.image);
+                // console.log(imageUrl);
+                return (
+                  <tr key={index}>
+                    <th scope="row"></th>
+                    <td>{item.nofmakatib}</td>
+                    <td>{item.makatibname}</td>
+                    <td>{item.stupmakatib}</td>
+                    <td>{item.mudarrisdetails}</td>
+                    <td>{item.salary}</td>
+                    <td>{item.booksdist}</td>
+                    <td>{item.expensesdet}</td>
+                    <td>
+                      {/* Corrected image source */}
+                      <img
+                        src={imageUrl}
+                        alt=""
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    </td>
+                    <td>
                       <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
-                        disabled
+                        className="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={() => {
+                          setIsEditMode(true);
+                          getBookDataByID(item._id);
+                          setBookId(item._id);
+                        }}
                       >
-                        Ask for suggestion
+                        Edit<i className="bi bi-pencil-square"></i>
                       </button>
-                    ) : (
+                    </td>
+                    <td>
                       <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
+                        className="btn btn-danger"
+                        onClick={() => deleteBook(item._id)}
                       >
-                        Ask for suggestion
+                        Delete<i className="bi bi-trash3-fill"></i>
                       </button>
-                    )}
-                  </td>
-                  {/* to */}
-                </tr>
-              ))}
+                    </td>
+                    {/* from */}
+                    <td>
+                      {/* Adjusted conditional rendering */}
+                      {suggestion &&
+                      suggestion.length > 0 &&
+                      suggestion.find(
+                        (s) =>
+                          s.suggestiondetails._id === item._id &&
+                          s.suggestionActive === true
+                      ) ? (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                          disabled
+                        >
+                          Ask for suggestion
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                        >
+                          Ask for suggestion
+                        </button>
+                      )}
+                    </td>
+                    {/* to */}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

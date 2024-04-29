@@ -20,6 +20,8 @@ const MasajidCon = ({ Toggle }) => {
   const [bookObj, setBookObj] = useState({});
   const [bookId, setBookId] = useState("");
   const [suggestion, setSuggestion] = useState({});
+  const [image, setImage] = useState(null);
+  const serverUrl = "http://localhost:8080/";
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -197,7 +199,7 @@ const MasajidCon = ({ Toggle }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     setBookId("");
-    const obb = {
+    let obb = {
       plan: plan.current.value,
       budget: budget.current.value,
       status: status.current.value,
@@ -230,7 +232,17 @@ const MasajidCon = ({ Toggle }) => {
         icon: "warning",
         title: "Please enter facilities",
       });
+    } else if (image == null) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please enter Image an image",
+      });
     } else {
+      const imageName = await uploadImage();
+      obb = {
+        ...obb,
+        imagePath: imageName, // Step 5: Assign imageName to obb
+      };
       const response = await fetch(BASE_URL + "masjidcons/addmasjidcons", {
         method: "POST",
         headers: {
@@ -247,6 +259,38 @@ const MasajidCon = ({ Toggle }) => {
           title: "New Masjid Constructuion Added successfully!",
         });
       }
+    }
+  };
+
+  //new change
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setImage(selectedImage); // Step 3
+  };
+
+  const uploadImage = async () => {
+    if (!image) return; // No image selected
+
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+
+      const response = await fetch(`${BASE_URL}upload/image`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Assuming the response contains the image name
+        console.log("image name here", data.File.filename);
+        return data.File.filename;
+      } else {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
     }
   };
 
@@ -354,69 +398,83 @@ const MasajidCon = ({ Toggle }) => {
                 <th scope="col">Status</th>
                 <th scope="col">Estimated Time of Completion</th>
                 <th scope="col">Facilities</th>
+                <th scope="col">Image</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
                 <th scope="col">Ask Suggestion</th>
               </tr>
             </thead>
             <tbody>
-              {userObj.map((item, index) => (
-                <tr key={index}>
-                  <th scope="row"></th>
-                  <td>{item.plan}</td>
-                  <td>{item.budget}</td>
-                  <td>{item.status}</td>
-                  <td>{item.etocompletion}</td>
-                  <td>{item.facilities}</td>
-                  <td>
-                    <button
-                      className="btn btn-success"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={() => {
-                        setIsEditMode(true);
-                        getBookDataByID(item._id);
-                        setBookId(item._id);
-                      }}
-                      // onChange={() => setBookId(item._id)}
-                    >
-                      Edit<i className="bi bi-pencil-square"></i>
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => deleteBook(item._id)}
-                    >
-                      Delete<i className="bi bi-trash3-fill"></i>
-                    </button>
-                  </td>
-                  <td>
-                    {suggestion &&
-                    suggestion.length > 0 &&
-                    suggestion.find(
-                      (s) =>
-                        s.suggestiondetails._id === item._id &&
-                        s.suggestionActive === true
-                    ) ? (
+              {userObj.map((item, index) => {
+                const imageUrl = item.image
+                  ? `${serverUrl}Uploads/${item.image}`
+                  : "";
+                return (
+                  <tr key={index}>
+                    <th scope="row"></th>
+                    <td>{item.plan}</td>
+                    <td>{item.budget}</td>
+                    <td>{item.status}</td>
+                    <td>{item.etocompletion}</td>
+                    <td>{item.facilities}</td>
+                    <td>
+                      {/* Corrected image source */}
+                      <img
+                        src={imageUrl}
+                        alt=""
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    </td>
+                    <td>
                       <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
-                        disabled
+                        className="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={() => {
+                          setIsEditMode(true);
+                          getBookDataByID(item._id);
+                          setBookId(item._id);
+                        }}
+                        // onChange={() => setBookId(item._id)}
                       >
-                        Ask for suggestion
+                        Edit<i className="bi bi-pencil-square"></i>
                       </button>
-                    ) : (
+                    </td>
+                    <td>
                       <button
-                        className="btn btn-warning"
-                        onClick={() => suggestionDetails(item)}
+                        className="btn btn-danger"
+                        onClick={() => deleteBook(item._id)}
                       >
-                        Ask for suggestion
+                        Delete<i className="bi bi-trash3-fill"></i>
                       </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      {suggestion &&
+                      suggestion.length > 0 &&
+                      suggestion.find(
+                        (s) =>
+                          s.suggestiondetails._id === item._id &&
+                          s.suggestionActive === true
+                      ) ? (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                          disabled
+                        >
+                          Ask for suggestion
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-warning"
+                          onClick={() => suggestionDetails(item)}
+                        >
+                          Ask for suggestion
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -529,6 +587,31 @@ const MasajidCon = ({ Toggle }) => {
                         // onChange={(e) => setIsMember(e.target.value)}
                       />
                       <label htmlFor="floatingInput">Facilities</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
+                    <div className="form-floating w-100">
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="image"
+                        onChange={handleImageChange} // Step 2: Handle image upload
+                      />
+                      <label htmlFor="image">Upload Image</label>
+                      <div>
+                        {image && ( // Step 4: Display selected image
+                          <div>
+                            <h4>Selected Image:</h4>
+                            <img
+                              src={URL.createObjectURL(image)}
+                              alt="Uploaded"
+                              style={{ height: "200px", width: "200px" }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

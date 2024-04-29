@@ -62,6 +62,7 @@ const Register = () => {
 
       // const data = await response.json();
       // console.log(data);
+      console.log("response", response);
       if (response.status === 201) {
         // Set isRegistered to true upon successful registration
         setIsRegistered(true);
